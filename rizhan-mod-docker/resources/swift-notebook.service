@@ -1,0 +1,17 @@
+# /usr/lib/systemd/system/swift-notebook.service
+[Unit]
+Description=Swift Notebook
+Requires=docker.service
+After=docker.service
+
+[Service]
+User=Ricky
+Group=Ricky
+ExecStartPre=-/usr/bin/docker kill swift-notebook
+ExecStartPre=-/usr/bin/docker rm -f swift-notebook
+ExecStart=/usr/bin/docker run --name=swift-notebook --cap-add SYS_PTRACE -v /home/Ricky/keras-workspace:/notebooks --net=host t20.local:5000/rizhan/swift-notebook:latest
+ExecStop=/usr/bin/docker stop -t 2 swift-notebook
+ExecStopPost=/usr/bin/docker rm -f swift-notebook
+
+[Install]
+WantedBy=multi-user.target
